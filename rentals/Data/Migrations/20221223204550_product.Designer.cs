@@ -12,8 +12,8 @@ using rentals.Data;
 namespace rentals.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20221223203707_products")]
-    partial class products
+    [Migration("20221223204550_product")]
+    partial class product
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -235,8 +235,9 @@ namespace rentals.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<double>("Description")
-                        .HasColumnType("float");
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit");
