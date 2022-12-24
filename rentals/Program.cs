@@ -25,6 +25,7 @@ builder.Services.AddScoped<AuthenticationStateProvider, RevalidatingIdentityAuth
 
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 builder.Services.AddScoped<IProduct, ProductRepo>();
+//builder.Services.AddScoped<IFileUpload, FileUpload>();
 
 var app = builder.Build();
 

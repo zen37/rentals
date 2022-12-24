@@ -29,9 +29,22 @@
                     <label>Name</label>
                     <InputText @bind-Value="Product.Name" class="form-control"></InputText>
                     <ValidationMessage For="()=>Product.Name"></ValidationMessage>
-                    <label>Price</label>
+
+                    <label>Description</label>
+                    <InputText @bind-Value="Product.Description" class="form-control"></InputText>
+                    <ValidationMessage For="()=>Product.Description"></ValidationMessage>
+
+                    <label>Location</label>
+                    <InputText @bind-Value="Product.Location" class="form-control"></InputText>
+                    <ValidationMessage For="()=>Product.Location"></ValidationMessage>
+
+                    <label>Price / day</label>
                     <InputNumber @bind-Value="Product.Price" class="form-control"></InputNumber>
                     <ValidationMessage For="()=>Product.Price"></ValidationMessage>
+
+                    <div class="form-group pt-4 col-6">
+                        <InputFile OnChange="HandleImageUpload"></InputFile>
+                    </div>
                 </div>
                 <div class="form-group py-2">
                     <button class="btn btn-primary">@Title</button>
@@ -60,6 +73,7 @@
 
     private ProductDTO Product { get; set; } = new ProductDTO();
 
+    public byte[] ImgUpload { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
@@ -118,8 +132,12 @@
             Product.UserId = authenticatedUserId;
             await _component.Update(Product);
         }
-        _nav.NavigateTo("components");
+        //   _nav.NavigateTo("components");
+    }
+
+    private async Task HandleImageUpload(InputFileChangeEventArgs e)
+    {
+        //https://github.com/bhrugen/TangyBlazor/blob/68f3f91fa5793225af1a2c5b942b41c4a0e1b0a3/TangyWeb_Server/Pages/Product/ProductUpsert.razor
     }
 
 }
-
