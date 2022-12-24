@@ -1,0 +1,125 @@
+﻿@page "/component/create"
+@page "/component/edit/{id:int}"
+
+@using Data.ModelsDTO
+@using Microsoft.AspNetCore.Identity;
+
+@inject NavigationManager _nav
+@inject Services.IRepo.IProduct _component
+
+<PageTitle>Add Toy</PageTitle>
+
+@attribute [Authorize]
+<div class="row my-2">
+    <h3 class="card-title text-primary mb-3 ml-3">@Title Toy</h3>
+
+    <div class="col-10">
+        @if (IsLoading)
+        {
+            <div class="text-center">
+                <img src="/images/loading.gif">
+            </div>
+        }
+        else
+        {
+            <EditForm Model="Product" OnValidSubmit="UpsertComponent">
+                <DataAnnotationsValidator />
+                <ValidationSummary />
+                <div class="form-group">
+                    <label>Name</label>
+                    <InputText @bind-Value="Product.Name" class="form-control"></InputText>
+                    <ValidationMessage For="()=>Product.Name"></ValidationMessage>
+                    <label>Price</label>
+                    <InputNumber @bind-Value="Product.Price" class="form-control"></InputNumber>
+                    <ValidationMessage For="()=>Product.Price"></ValidationMessage>
+                </div>
+                <div class="form-group py-2">
+                    <button class="btn btn-primary">@Title</button>
+                </div>
+            </EditForm>
+        }
+    </div>
+</div>
+
+
+@code {
+
+    [Parameter]
+    public int Id { get; set; }
+
+    [CascadingParameter]
+    public Task<AuthenticationState> authenticationState { get; set; }
+
+    [Inject]
+    UserManager<IdentityUser> userManager { get; set; }
+
+    private string authenticatedUserId;
+
+    private bool IsLoading { get; set; }
+    private string Title { get; set; } = "Create";
+
+    private ProductDTO Product { get; set; } = new ProductDTO();
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        var user = (await authenticationState).User;
+
+        if (user.Identity.IsAuthenticated)
+        {
+            var authenticatedUser = await userManager.GetUserAsync(user);
+            authenticatedUserId = authenticatedUser.Id;
+            //   var currentUserEmail = currentUser.Email;
+
+        }
+        else
+        {
+            // user is not logged in
+        }
+
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            if (Id == 0)
+            {
+                IsLoading = false;
+            }
+            else
+            {
+                Title = "Update";
+                await LoadComponent();
+            }
+        }
+
+    }
+
+    private async Task LoadComponent()
+    {
+        IsLoading = true;
+        StateHasChanged();
+        Product = await _component.Get(Id);
+        IsLoading = false;
+        StateHasChanged();
+    }
+
+
+    private async Task UpsertComponent()
+    {
+        if (Product.Id == 0)
+        {
+            Product.UserId = authenticatedUserId;
+            await _component.Create(Product);
+        }
+        else
+        {
+            Product.UserId = authenticatedUserId;
+            await _component.Update(Product);
+        }
+        _nav.NavigateTo("components");
+    }
+
+}
+

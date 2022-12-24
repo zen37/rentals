@@ -13,6 +13,7 @@ namespace rentals.Data.Models
         public string Location { get; set; }
         public string? PostalCode { get; set; }
         public string? Url { get; set; }
+        public byte[]? Image { get; set; }
         public bool IsActive { get; set; }
         public string UserId { get; set; }
 

@@ -20,5 +20,6 @@ namespace rentals.Data.ModelsDTO
         public string Location { get; set; }
         public string? PostalCode { get; set; }
         public string? Url { get; set; }
+        public byte[]? Image { get; set; }
     }
 }
